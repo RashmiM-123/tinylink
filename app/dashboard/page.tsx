@@ -30,6 +30,7 @@ const Dashboard = () => {
                         <th>Last Clicked</th>
                         <th>Actions</th>
                     </tr>
+                    </thead>
                     <tbody>
                         <tr>
                             <td>short url</td>
@@ -43,7 +44,7 @@ const Dashboard = () => {
 
                         </tr>
                     </tbody>
-                </thead>
+                
             </table>
         </div>
 
