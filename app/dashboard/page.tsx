@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 type LinkRow = {
     id?: number;
     shortcode?: string;
-    targetutl?: string;
+    targeturl?: string;
     clicks?: number | null;
     last_clicked?: string | null;
     created_at?: string | null;
@@ -87,7 +87,7 @@ export default function Dashboard() {
                                         "-"
                                     )}
                                 </td>
-                                <td style={{ padding: 8, borderBottom: "1px solid #f0f0f0" }}>{l.targetutl ?? "-"}</td>
+                                <td style={{ padding: 8, borderBottom: "1px solid #f0f0f0" }}>{l.targeturl ?? "-"}</td>
                                 <td style={{ padding: 8, borderBottom: "1px solid #f0f0f0", textAlign: "right" }}>{l.clicks ?? 0}</td>
                                 <td style={{ padding: 8, borderBottom: "1px solid #f0f0f0" }}>
                                     {l.last_clicked ? new Date(l.last_clicked).toLocaleString() : "-"}
