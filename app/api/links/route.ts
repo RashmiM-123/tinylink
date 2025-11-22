@@ -1,5 +1,5 @@
 import { pool } from "@/lib/db";
-
+``
 
 
 export async function POST(req: Request) {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     // simple shortcode generator (replace with nanoid if desired)
     const shortcode = Math.random().toString(36).slice(2, 8);
 
-    // Insert into DB (adjust column name: schema uses targetutl)
+    // Insert into DB (adjust column name: schema uses targeturl)
     const insert = await pool.query(
       "INSERT INTO links (shortcode, targeturl) VALUES ($1, $2) RETURNING *",
       [shortcode, target]

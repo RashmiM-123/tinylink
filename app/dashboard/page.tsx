@@ -42,7 +42,7 @@ export default function Dashboard() {
        const result=await fetch("/api/links",{
          method: "POST",
            headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ targeturl: longUrl.trim() }) // server accepts targeturl or targetutl
+      body: JSON.stringify({ targeturl: longUrl.trim() }) // server accepts targeturl or targeturl
     });
        const data=await result.json();
        console.log("data",data)

@@ -1,17 +1,32 @@
 import { pool } from "@/lib/db";
 
 export async function GET(
-  _req: Request,
-  { params }: { params: { shortcode: string } }
+  req: Request,
+  context?: { params?: { shortcode?: string } }
 ) {
-  const { shortcode } = params;
-  if (!shortcode) {
-    return new Response("Missing shortcode", { status: 400 });
-  }
-
   try {
+    const params = context?.params ?? {};
+    let shortcode = params.shortcode;
+
+    // fallback: extract from request URL if params not provided
+    if (!shortcode) {
+      try {
+        const url = new URL(req.url);
+        const parts = url.pathname.split("/").filter(Boolean);
+        shortcode = parts[parts.length - 1];
+        console.log("Fallback extracted shortcode:", shortcode);
+      } catch (e) {
+        console.log("Failed to parse URL for shortcode fallback", e);
+      }
+    }
+
+    if (!shortcode) {
+      console.log("No shortcode found. context.params:", context?.params);
+      return new Response("Missing shortcode", { status: 400 });
+    }
+
     const q = await pool.query(
-      "SELECT id, shortcode, targetutl, targeturl FROM links WHERE shortcode = $1 LIMIT 1",
+      "SELECT id, shortcode, targeturl FROM links WHERE shortcode = $1 LIMIT 1",
       [shortcode]
     );
 
@@ -20,9 +35,9 @@ export async function GET(
     }
 
     const row = q.rows[0];
-    const target = row.targetutl ?? row.targeturl ?? "/";
+    const target = row.targeturl ?? row.targeturl ?? "/";
 
-    // Update clicks and last_clicked (best-effort; separate query keeps logic simple)
+    // Best-effort update clicks and last_clicked
     try {
       await pool.query(
         "UPDATE links SET clicks = COALESCE(clicks, 0) + 1, last_clicked = now() WHERE id = $1",
@@ -32,13 +47,12 @@ export async function GET(
       console.error("Failed to update clicks for shortcode", shortcode, updErr);
     }
 
-    // Redirect to the target URL
     return new Response(null, {
       status: 307,
       headers: { Location: target },
     });
   } catch (err) {
-    console.error("Redirect error for shortcode", shortcode, err);
+    console.error("Redirect error", err);
     return new Response(JSON.stringify({ error: "Server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
