@@ -7,7 +7,7 @@ export async function GET(
   try {
     const params = context?.params ?? {};
     let shortcode = params.shortcode;
-
+    
     // fallback: extract from request URL if params not provided
     if (!shortcode) {
       try {
